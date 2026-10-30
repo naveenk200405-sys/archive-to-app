@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform, type MotionValue } from "motion/react";
+import { Reveal, spotlight } from "@/components/anim";
 
 const WORDS =
   "We build custom AI agents and growth engines that find your buyers, answer them instantly and book the call — while you sleep.".split(
@@ -51,67 +52,35 @@ const PANELS = [
 
 function PanelCard({ p }: { p: (typeof PANELS)[number] }) {
   return (
-    <div className="group relative flex min-h-[240px] flex-col justify-between gap-8 overflow-hidden rounded-3xl border border-ink-border bg-ink-soft p-7 transition-colors duration-500 hover:border-signal/60 md:h-[46vh] md:min-h-[320px] md:w-[34rem] md:shrink-0 md:rounded-4xl md:p-10">
-      <div aria-hidden className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-signal/20 blur-3xl transition-transform duration-700 group-hover:scale-150" />
-      <span className="font-display text-6xl font-bold text-ink-muted/40 transition-colors group-hover:text-signal md:text-8xl">{p.k}</span>
+    <div
+      onPointerMove={spotlight}
+      className="group relative flex h-full min-h-[220px] flex-col justify-between gap-10 overflow-hidden rounded-2xl border border-ink-border bg-ink-soft p-7 transition-[transform,border-color] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] active:scale-[0.985] md:min-h-[260px] md:p-8 [@media(hover:hover)]:hover:-translate-y-1 [@media(hover:hover)]:hover:border-signal/60 [@media(hover:hover)]:active:scale-100"
+    >
+      <span className="font-display text-sm font-semibold tabular-nums text-ink-muted">{p.k}</span>
       <div className="relative">
-        <h3 className="headline text-2xl md:text-4xl">{p.t}</h3>
+        <h3 className="headline text-2xl md:text-3xl">{p.t}</h3>
         <p className="mt-3 max-w-md text-ink-muted">{p.d}</p>
       </div>
     </div>
   );
 }
 
-/** Mobile: stacked cards that fade in. Desktop: pinned horizontal scroll gallery. */
+/** Dark section with a 2x2 grid of agent cards; same layout on every width, nothing pinned. */
 export function HorizontalAgents() {
   return (
-    <>
-      <section className="relative overflow-hidden bg-ink py-20 text-ink-fg md:hidden">
-        <div className="grid-lines absolute inset-0" aria-hidden />
-        <div className="relative px-5">
-          <p className="eyebrow text-signal">What our agents do</p>
-          <h2 className="headline mt-4 text-4xl">
-            Built to work. <span className="text-signal">Never off duty.</span>
-          </h2>
-          <div className="mt-10 flex flex-col gap-4">
-            {PANELS.map((p) => (
-              <motion.div
-                key={p.k}
-                initial={{ opacity: 0, y: 32 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-60px" }}
-                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-              >
-                <PanelCard p={p} />
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-      <PinnedAgents />
-    </>
-  );
-}
-
-function PinnedAgents() {
-  const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref });
-  const x = useTransform(scrollYProgress, [0, 1], ["2%", "-62%"]);
-  return (
-    <section ref={ref} className="relative hidden h-[300vh] bg-ink text-ink-fg md:block">
-      <div className="sticky top-0 flex h-screen flex-col justify-center overflow-hidden">
-        <div className="grid-lines absolute inset-0" aria-hidden />
-        <div className="relative mx-auto w-full max-w-6xl px-5 md:px-8">
-          <p className="eyebrow text-signal">What our agents do</p>
-          <h2 className="headline mt-4 max-w-3xl text-4xl md:text-6xl">
-            Built to work. <span className="text-signal">Never off duty.</span>
-          </h2>
-        </div>
-        <motion.div style={{ x }} className="relative mt-12 flex gap-6 pl-5 md:pl-[max(2rem,calc((100vw-72rem)/2+2rem))]">
-          {PANELS.map((p) => (
-            <PanelCard key={p.k} p={p} />
+    <section className="bg-ink text-ink-fg">
+      <div className="container-site section-y">
+        <p className="eyebrow text-ink-muted">What our agents do</p>
+        <h2 className="headline mt-4 max-w-3xl text-4xl md:text-6xl">
+          Built to work. <span className="serif">Never off duty.</span>
+        </h2>
+        <div className="mt-12 grid gap-4 md:grid-cols-2 md:gap-6">
+          {PANELS.map((p, i) => (
+            <Reveal key={p.k} delay={i * 0.08} className="h-full">
+              <PanelCard p={p} />
+            </Reveal>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );
