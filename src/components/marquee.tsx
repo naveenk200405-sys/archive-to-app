@@ -19,7 +19,7 @@ export function Marquee({
       {items.map((item, i) => (
         <span key={i} className="flex items-center whitespace-nowrap">
           <span className={cn(outlined && "text-outline")}>{item}</span>
-          <span className="mx-6 text-signal md:mx-10" aria-hidden>
+          <span className="mx-6 text-border md:mx-10" aria-hidden>
             {separator}
           </span>
         </span>
@@ -28,7 +28,7 @@ export function Marquee({
   );
 
   return (
-    <div className={cn("marquee-hover-pause overflow-hidden", className)} aria-hidden>
+    <div className={cn("marquee-hover-pause fade-x overflow-hidden", className)} aria-hidden>
       <div className={slow ? "marquee-track-slow" : "marquee-track"}>
         {row}
         {row}

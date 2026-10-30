@@ -1,14 +1,18 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useRef, type ReactNode } from "react";
+import { useRef, useState, type ReactNode } from "react";
 import { motion, useScroll, useTransform, type MotionValue } from "motion/react";
 import { ArrowUpRight, ArrowRight, Plus } from "lucide-react";
-import { Reveal } from "@/components/anim";
+import { Reveal, Magnetic, spotlight } from "@/components/anim";
 import { Marquee } from "@/components/marquee";
 import { SERVICES } from "@/lib/services";
 import { BigStats } from "@/components/big-stats";
 import { HorizontalAgents } from "@/components/scroll-showcase";
 import { POSTS } from "@/lib/blog";
 import { PostCard } from "@/routes/blog.index";
+import imgNorthwind from "@/assets/work-northwind.jpg";
+import imgLumen from "@/assets/work-lumen.jpg";
+import imgAtlas from "@/assets/work-atlas.jpg";
+import imgFern from "@/assets/work-fern.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -25,6 +29,7 @@ export const Route = createFileRoute("/")({
 });
 
 const EASE = [0.22, 1, 0.36, 1] as const;
+const STAGGER = 0.1;
 
 function Index() {
   return (
@@ -44,90 +49,82 @@ function Index() {
 
 /* ---------------- HERO ---------------- */
 
-function Line({ children, delay }: { children: ReactNode; delay: number }) {
+function Rise({ children, i, className }: { children: ReactNode; i: number; className?: string }) {
   return (
-    <span className="block overflow-hidden pb-[0.08em]">
-      <motion.span
-        className="block"
-        initial={{ y: "110%" }}
-        animate={{ y: 0 }}
-        transition={{ duration: 1.1, delay, ease: EASE }}
-      >
-        {children}
-      </motion.span>
-    </span>
+    <motion.div
+      className={className}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.9, delay: 0.1 + i * STAGGER, ease: EASE }}
+    >
+      {children}
+    </motion.div>
   );
 }
 
 function Hero() {
-  const ref = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
-  const y = useTransform(scrollYProgress, [0, 1], [0, 160]);
-  const scale = useTransform(scrollYProgress, [0, 1], [1, 0.92]);
-
+  const [glow, setGlow] = useState(false);
   return (
-    <section ref={ref} className="relative isolate overflow-hidden pb-16 pt-32 md:pb-28 md:pt-44">
-      <div aria-hidden className="absolute inset-0 -z-10">
-        <div className="blob left-[-10%] top-[-10%] h-[28rem] w-[28rem] bg-signal/35" />
-        <div className="blob right-[-8%] top-[10%] h-[26rem] w-[26rem] bg-signal-deep/20" style={{ animationDelay: "-6s" }} />
-        <div className="blob bottom-[-15%] left-[30%] h-[24rem] w-[24rem] bg-coral/20" style={{ animationDelay: "-12s" }} />
-        <div className="blob right-[25%] top-[45%] h-[16rem] w-[16rem] bg-sky/25" style={{ animationDelay: "-3s" }} />
-      </div>
+    <section
+      data-glow={glow ? "on" : "off"}
+      onPointerMove={(e) => {
+        spotlight(e);
+        if (!glow && e.pointerType === "mouse") setGlow(true);
+      }}
+      onPointerLeave={() => setGlow(false)}
+      className="relative isolate pb-16 pt-32 md:pb-24 md:pt-44"
+    >
+      <div aria-hidden className="hero-cursor-glow" />
+      <div className="container-site">
+        <Rise i={0} className="flex items-center gap-3">
+          <span className="pulse-dot shrink-0" aria-hidden />
+          <span className="eyebrow text-muted-foreground">
+            <span className="whitespace-nowrap">AI growth agency ·</span>{" "}
+            <span className="whitespace-nowrap">Est. for the AI era</span>
+          </span>
+        </Rise>
 
-      <motion.div style={{ y, scale }} className="mx-auto max-w-7xl px-5 md:px-8">
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: EASE }}
-          className="flex items-center gap-3"
-        >
-          <span className="pulse-dot" aria-hidden />
-          <span className="eyebrow text-muted-foreground">AI growth agency · Est. for the AI era</span>
-        </motion.p>
-
-        <h1 className="headline mt-8 text-[clamp(2.9rem,10vw,8rem)] leading-[0.92]">
-          <Line delay={0.1}>
-            <span className="serif text-spectrum pr-2">Transforming</span> brands
-          </Line>
-          <Line delay={0.22}>into AI-native</Line>
-          <Line delay={0.34}>
-            growth <span className="serif text-signal">machines.</span>
-          </Line>
+        <h1 className="headline mt-8 text-[clamp(2.75rem,9vw,7rem)] leading-[0.95]">
+          <Rise i={1}>
+            <span className="serif pr-2">Transforming</span> brands
+          </Rise>
+          <Rise i={2}>into AI-native</Rise>
+          <Rise i={3}>
+            growth <span className="serif">machines.</span>
+          </Rise>
         </h1>
 
-        <div className="mt-12 grid gap-8 md:mt-16 md:grid-cols-[1fr_auto] md:items-end">
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.7, ease: EASE }}
-            className="max-w-lg text-lg leading-relaxed text-muted-foreground md:text-xl"
-          >
-            We get you ranked on Google, cited by ChatGPT, and build custom AI agents that turn
-            attention into booked calls — around the clock.
-          </motion.p>
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.85, ease: EASE }}
-            className="flex flex-wrap gap-3"
-          >
-            <Link to="/contact" hash="book" className="btn-ink">
-              Book a strategy call <ArrowUpRight className="h-4 w-4" />
-            </Link>
-            <Link to="/work" className="btn-outline">
-              See our work
-            </Link>
-          </motion.div>
+        <div className="mt-12 grid gap-8 md:mt-16 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
+          <Rise i={4}>
+            <p className="max-w-lg text-lg leading-relaxed text-muted-foreground md:text-xl">
+              We get you ranked on Google, cited by ChatGPT, and build custom AI agents that turn
+              attention into booked calls — around the clock.
+            </p>
+          </Rise>
+          <Rise i={5} className="grid grid-cols-1 gap-3 sm:flex sm:flex-nowrap">
+            <Magnetic>
+              <Link to="/contact" hash="book" className="btn-ink press whitespace-nowrap">
+                Book a strategy call <ArrowUpRight className="h-4 w-4" />
+              </Link>
+            </Magnetic>
+            <Magnetic>
+              <Link to="/work" className="btn-outline press whitespace-nowrap">
+                See our work
+              </Link>
+            </Magnetic>
+          </Rise>
         </div>
-      </motion.div>
-
-      <div className="mt-20 border-y border-border py-6 md:mt-28">
-        <Marquee
-          slow
-          className="font-display text-xl font-semibold text-muted-foreground md:text-2xl"
-          items={["ChatGPT", "Perplexity", "Google AI Overviews", "Gemini", "Claude", "Instagram", "LinkedIn", "Google Search"]}
-        />
       </div>
+
+      <Rise i={6} className="container-site mt-20 md:mt-24">
+        <div className="border-y border-border py-6">
+          <Marquee
+            slow
+            className="font-display text-xl font-semibold text-muted-foreground md:text-2xl"
+            items={["ChatGPT", "Perplexity", "Google AI Overviews", "Gemini", "Claude", "Instagram", "LinkedIn", "Google Search"]}
+          />
+        </div>
+      </Rise>
     </section>
   );
 }
@@ -145,11 +142,11 @@ const AMBITION: { w: string; s?: boolean }[] = [
 
 function Ambition() {
   const ref = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start 0.8", "end 0.4"] });
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start 0.85", "end 0.5"] });
   return (
-    <section ref={ref} className="mx-auto max-w-6xl px-5 py-24 md:px-8 md:py-40">
-      <p className="eyebrow text-signal">Ambition</p>
-      <p className="headline mt-8 flex flex-wrap text-[clamp(2rem,6vw,4.6rem)] leading-[1.08]">
+    <section ref={ref} className="container-site section-y">
+      <p className="eyebrow text-muted-foreground">Ambition</p>
+      <p className="headline mt-8 flex flex-wrap text-[clamp(2rem,5.5vw,4.25rem)] leading-[1.08]">
         {AMBITION.map((item, i) => (
           <LitWord key={i} progress={scrollYProgress} range={[i / AMBITION.length, (i + 1) / AMBITION.length]} serif={!!item.s}>
             {item.w}
@@ -161,121 +158,125 @@ function Ambition() {
 }
 
 function LitWord({ children, progress, range, serif }: { children: string; progress: MotionValue<number>; range: [number, number]; serif?: boolean }) {
-  const opacity = useTransform(progress, range, [0.12, 1]);
+  const opacity = useTransform(progress, range, [0.32, 1]);
   return (
-    <motion.span style={{ opacity }} className={`mr-[0.25em] inline-block ${serif ? "serif text-spectrum" : ""}`}>
+    <motion.span style={{ opacity }} className={`mr-[0.25em] inline-block ${serif ? "serif" : ""}`}>
       {children}
     </motion.span>
   );
 }
 
-/* ---------------- SELECTED WORK (sticky stacked cards) ---------------- */
+/* ---------------- SELECTED WORK ---------------- */
 
 const WORK = [
-  { name: "Northwind Dental", line: "An AI receptionist that books 40+ appointments a week.", tags: ["AI Agent", "Web", "Local SEO"], art: "from-ink via-violet to-signal", stat: "+312% bookings" },
-  { name: "Lumen Skincare", line: "Getting a DTC brand cited by ChatGPT for its category.", tags: ["AEO", "Content", "Social"], art: "from-signal-deep via-signal to-coral", stat: "38/42 AI citations" },
-  { name: "Atlas Logistics", line: "A B2B site and lead-qualifier agent that never sleeps.", tags: ["Web Design", "AI Agent", "SEO"], art: "from-ink via-ink-soft to-signal-deep", stat: "3.4x qualified leads" },
-  { name: "Fern & Co.", line: "Rebuilding search visibility for a growing hospitality group.", tags: ["SEO", "AEO", "Strategy"], art: "from-violet via-signal-deep to-coral", stat: "#1 for 120 keywords" },
+  { name: "Northwind Dental", line: "An AI receptionist that books 40+ appointments a week.", tags: ["AI Agent", "Web", "Local SEO"], img: imgNorthwind, stat: "+312% bookings" },
+  { name: "Lumen Skincare", line: "Getting a DTC brand cited by ChatGPT for its category.", tags: ["AEO", "Content", "Social"], img: imgLumen, stat: "38/42 AI citations" },
+  { name: "Atlas Logistics", line: "A B2B site and lead-qualifier agent that never sleeps.", tags: ["Web Design", "AI Agent", "SEO"], img: imgAtlas, stat: "3.4x qualified leads" },
+  { name: "Fern & Co.", line: "Rebuilding search visibility for a growing hospitality group.", tags: ["SEO", "AEO", "Strategy"], img: imgFern, stat: "#1 for 120 keywords" },
 ];
+
+function SectionHead({ eyebrow, title, action }: { eyebrow: string; title: ReactNode; action?: ReactNode }) {
+  return (
+    <div className="flex flex-wrap items-end justify-between gap-6">
+      <Reveal>
+        <p className="eyebrow text-muted-foreground">{eyebrow}</p>
+        <h2 className="headline mt-4 max-w-3xl text-4xl md:text-6xl">{title}</h2>
+      </Reveal>
+      {action}
+    </div>
+  );
+}
 
 function SelectedWork() {
   return (
-    <section className="mx-auto max-w-7xl px-5 pb-24 md:px-8 md:pb-40">
-      <div className="flex flex-wrap items-end justify-between gap-6">
-        <Reveal>
-          <p className="eyebrow text-signal">Selected work</p>
-          <h2 className="headline mt-4 max-w-3xl text-4xl md:text-7xl">
-            Built for moments when growth becomes <span className="serif text-spectrum">inevitable.</span>
-          </h2>
-        </Reveal>
-        <Link to="/work" className="btn-outline">
-          All work <ArrowRight className="h-4 w-4" />
-        </Link>
-      </div>
-
-      <div className="mt-16 space-y-6 md:space-y-0">
+    <section className="container-site pb-24 md:pb-32">
+      <SectionHead
+        eyebrow="Selected work"
+        title={<>Built for moments when growth becomes <span className="serif">inevitable.</span></>}
+        action={
+          <Magnetic>
+            <Link to="/work" className="btn-outline press">
+              All work <ArrowRight className="h-4 w-4" />
+            </Link>
+          </Magnetic>
+        }
+      />
+      <div className="mt-12 grid gap-6 md:mt-16 md:grid-cols-2">
         {WORK.map((w, i) => (
-          <WorkCard key={w.name} w={w} i={i} />
+          <Reveal key={w.name} delay={(i % 2) * 0.08} className="h-full">
+            <WorkCard w={w} />
+          </Reveal>
         ))}
       </div>
     </section>
   );
 }
 
-function WorkCard({ w, i }: { w: (typeof WORK)[number]; i: number }) {
+function WorkCard({ w }: { w: (typeof WORK)[number] }) {
   return (
-    <div className="md:sticky md:pb-8" style={{ top: `${96 + i * 24}px` }}>
-      <Reveal>
-        <Link to="/work" className="group block overflow-hidden rounded-4xl border border-border bg-card shadow-[var(--shadow-lift)]">
-          <div className={`relative aspect-[4/3] overflow-hidden bg-gradient-to-br md:aspect-[21/9] ${w.art}`}>
-            <motion.div
-              className="absolute inset-0"
-              whileHover={{ scale: 1.05 }}
-              transition={{ duration: 1, ease: EASE }}
-            >
-              <div className="grain absolute inset-0" />
-              <div className="absolute -right-10 -top-10 h-64 w-64 rounded-full bg-card/25 blur-2xl" />
-            </motion.div>
-            <p className="headline absolute bottom-5 left-6 text-5xl text-ink-fg md:bottom-8 md:left-10 md:text-8xl">
-              {w.name.split(" ")[0]}
-              <span className="serif">.</span>
-            </p>
-            <span className="absolute right-5 top-5 rounded-full bg-card/90 px-4 py-2 text-sm font-semibold text-foreground backdrop-blur md:right-8 md:top-8">
-              {w.stat}
-            </span>
-          </div>
-          <div className="flex flex-col gap-4 p-6 md:flex-row md:items-center md:justify-between md:p-8">
-            <div>
-              <h3 className="headline text-2xl md:text-3xl">{w.name}</h3>
-              <p className="mt-1 text-muted-foreground">{w.line}</p>
-            </div>
-            <div className="flex flex-wrap items-center gap-2">
-              {w.tags.map((t) => (
-                <span key={t} className="rounded-full border border-border px-3 py-1 text-xs font-medium">
-                  {t}
-                </span>
-              ))}
-              <span className="ml-2 grid h-11 w-11 place-items-center rounded-full bg-ink text-ink-fg transition-transform duration-500 group-hover:rotate-45">
-                <ArrowUpRight className="h-5 w-5" />
+    <Link to="/work" onPointerMove={spotlight} className="card-lift group flex h-full flex-col overflow-hidden">
+      <div className="relative aspect-[16/10] overflow-hidden bg-ink">
+        <img
+          src={w.img}
+          alt={`${w.name} project screenshot`}
+          loading="lazy"
+          width={1600}
+          height={912}
+          className="h-full w-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
+        />
+        <span className="absolute right-4 top-4 rounded-full bg-card px-3 py-1.5 text-xs font-semibold text-foreground shadow-[var(--shadow-soft)]">
+          {w.stat}
+        </span>
+      </div>
+      <div className="flex flex-1 flex-col gap-4 p-6">
+        <div>
+          <h3 className="headline text-2xl">{w.name}</h3>
+          <p className="mt-1 text-muted-foreground">{w.line}</p>
+        </div>
+        <div className="mt-auto flex items-center justify-between gap-4">
+          <div className="flex flex-wrap gap-2">
+            {w.tags.map((t) => (
+              <span key={t} className="rounded-full border border-border px-3 py-1 text-xs font-medium text-muted-foreground">
+                {t}
               </span>
-            </div>
+            ))}
           </div>
-        </Link>
-      </Reveal>
-    </div>
+          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-border transition-colors duration-300 group-hover:border-signal group-hover:text-signal">
+            <ArrowUpRight className="h-4 w-4" />
+          </span>
+        </div>
+      </div>
+    </Link>
   );
 }
 
-/* ---------------- SERVICES (hover list) ---------------- */
-
-const DOTS = ["bg-signal", "bg-coral", "bg-signal", "bg-coral", "bg-signal", "bg-coral"];
+/* ---------------- SERVICES ---------------- */
 
 function ServicesList() {
   return (
-    <section className="grain relative bg-ink py-24 text-ink-fg md:py-36">
-      <div className="relative z-[2] mx-auto max-w-7xl px-5 md:px-8">
+    <section className="bg-ink text-ink-fg">
+      <div className="container-site section-y">
         <Reveal>
-          <p className="eyebrow text-signal">Capabilities</p>
-          <h2 className="headline mt-4 max-w-3xl text-4xl md:text-7xl">
-            Everything you need to be <span className="serif text-spectrum">found & chosen.</span>
+          <p className="eyebrow text-ink-muted">Capabilities</p>
+          <h2 className="headline mt-4 max-w-3xl text-4xl md:text-6xl">
+            Everything you need to be <span className="serif">found & chosen.</span>
           </h2>
         </Reveal>
-        <div className="mt-16 border-b border-ink-border">
+        <div className="mt-12 border-b border-ink-border md:mt-16">
           {SERVICES.map((s, i) => (
             <Reveal key={s.id} delay={i * 0.04}>
               <Link
                 to="/services"
-                className="group relative grid grid-cols-[auto_1fr_auto] items-center gap-4 overflow-hidden border-t border-ink-border py-7 md:gap-10 md:py-10"
+                className="group grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-4 border-t border-ink-border py-7 transition-colors active:bg-ink-soft md:gap-10 md:py-9"
               >
-                <span className={`absolute inset-0 origin-bottom scale-y-0 opacity-15 transition-transform duration-500 group-hover:scale-y-100 ${DOTS[i % DOTS.length]}`} />
-                <span className="relative font-display text-sm text-ink-muted">{s.index}</span>
-                <div className="relative">
-                  <h3 className="headline text-3xl transition-transform duration-500 group-hover:translate-x-3 md:text-6xl">
+                <span className="font-display text-sm tabular-nums text-ink-muted">{s.index}</span>
+                <div className="min-w-0">
+                  <h3 className="headline text-3xl transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] md:text-5xl [@media(hover:hover)]:group-hover:translate-x-2">
                     {s.title}
                   </h3>
                   <p className="mt-2 max-w-xl text-sm text-ink-muted md:text-base">{s.tagline}</p>
                 </div>
-                <span className={`relative grid h-10 w-10 place-items-center rounded-full text-ink transition-transform duration-500 group-hover:rotate-90 md:h-14 md:w-14 ${DOTS[i % DOTS.length]}`}>
+                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-ink-border text-ink-fg transition-all duration-500 md:h-12 md:w-12 [@media(hover:hover)]:group-hover:rotate-90 [@media(hover:hover)]:group-hover:border-signal [@media(hover:hover)]:group-hover:text-signal">
                   <Plus className="h-5 w-5" />
                 </span>
               </Link>
@@ -290,29 +291,26 @@ function ServicesList() {
 /* ---------------- APPROACH ---------------- */
 
 const STEPS = [
-  { k: "01", t: "Discover", d: "We map how buyers search, ask AI and decide — every gap becomes an opportunity.", c: "bg-signal" },
-  { k: "02", t: "Strategize", d: "One plan: what we rank for, what AI cites you for, what agents we automate first.", c: "bg-coral" },
-  { k: "03", t: "Build & launch", d: "Pages, posts and agents go live with tracking on every click and conversation.", c: "bg-signal" },
-  { k: "04", t: "Compound", d: "Monthly reporting on rankings, citations and leads — and the next sprint shipped.", c: "bg-coral" },
+  { k: "01", t: "Discover", d: "We map how buyers search, ask AI and decide — every gap becomes an opportunity." },
+  { k: "02", t: "Strategize", d: "One plan: what we rank for, what AI cites you for, what agents we automate first." },
+  { k: "03", t: "Build & launch", d: "Pages, posts and agents go live with tracking on every click and conversation." },
+  { k: "04", t: "Compound", d: "Monthly reporting on rankings, citations and leads — and the next sprint shipped." },
 ];
 
 function Approach() {
   return (
-    <section className="mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-36">
-      <Reveal>
-        <p className="eyebrow text-signal">Our approach</p>
-        <h2 className="headline mt-4 max-w-3xl text-4xl md:text-7xl">
-          Growing brands by <span className="serif text-spectrum">redefining</span> how they’re found.
-        </h2>
-      </Reveal>
-      <div className="mt-16 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <section className="container-site pb-24 md:pb-32">
+      <SectionHead
+        eyebrow="Our approach"
+        title={<>Growing brands by <span className="serif">redefining</span> how they’re found.</>}
+      />
+      <div className="mt-12 grid gap-4 sm:grid-cols-2 md:mt-16 lg:grid-cols-4">
         {STEPS.map((s, i) => (
-          <Reveal key={s.k} delay={i * 0.08}>
-            <div className="group relative h-full overflow-hidden rounded-3xl border border-border bg-card p-7 transition-transform duration-500 hover:-translate-y-2">
-              <span className={`absolute -right-12 -top-12 h-32 w-32 rounded-full opacity-30 blur-2xl transition-transform duration-700 group-hover:scale-[2.2] ${s.c}`} />
-              <span className="serif relative text-6xl text-muted-foreground">{s.k}</span>
-              <h3 className="headline relative mt-10 text-2xl">{s.t}</h3>
-              <p className="relative mt-3 text-sm leading-relaxed text-muted-foreground">{s.d}</p>
+          <Reveal key={s.k} delay={i * 0.08} className="h-full">
+            <div onPointerMove={spotlight} className="card-lift h-full p-7">
+              <span className="serif text-5xl text-muted-foreground">{s.k}</span>
+              <h3 className="headline mt-10 text-2xl">{s.t}</h3>
+              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{s.d}</p>
             </div>
           </Reveal>
         ))}
@@ -325,19 +323,19 @@ function Approach() {
 
 function Insights() {
   return (
-    <section className="mx-auto max-w-7xl px-5 pb-24 md:px-8 md:pb-36">
-      <div className="flex flex-wrap items-end justify-between gap-6">
-        <Reveal>
-          <p className="eyebrow text-signal">Insights</p>
-          <h2 className="headline mt-4 max-w-3xl text-4xl md:text-6xl">
-            The latest from <span className="serif text-spectrum">our world and beyond.</span>
-          </h2>
-        </Reveal>
-        <Link to="/blog" className="btn-outline">
-          All articles <ArrowRight className="h-4 w-4" />
-        </Link>
-      </div>
-      <div className="mt-14 grid gap-6 md:grid-cols-3">
+    <section className="container-site pb-24 md:pb-32">
+      <SectionHead
+        eyebrow="Insights"
+        title={<>The latest from <span className="serif">our world and beyond.</span></>}
+        action={
+          <Magnetic>
+            <Link to="/blog" className="btn-outline press">
+              All articles <ArrowRight className="h-4 w-4" />
+            </Link>
+          </Magnetic>
+        }
+      />
+      <div className="mt-12 grid gap-8 md:mt-16 md:grid-cols-3 md:gap-6">
         {POSTS.map((p, i) => (
           <Reveal key={p.slug} delay={i * 0.08}>
             <PostCard post={p} />
@@ -352,29 +350,30 @@ function Insights() {
 
 function FinalCta() {
   return (
-    <section className="relative isolate overflow-hidden bg-ink px-5 py-28 text-center text-ink-fg md:py-44">
-      <div aria-hidden className="absolute inset-0 -z-10">
-        <div className="blob left-[5%] top-[10%] h-80 w-80 bg-signal/40" />
-        <div className="blob right-[5%] bottom-[0%] h-80 w-80 bg-violet/40" style={{ animationDelay: "-8s" }} />
-        <div className="blob left-[40%] bottom-[20%] h-64 w-64 bg-coral/30" style={{ animationDelay: "-4s" }} />
+    <section className="bg-ink text-center text-ink-fg">
+      <div className="container-site section-y">
+        <Reveal>
+          <p className="eyebrow text-ink-muted">Ready when you are</p>
+          <h2 className="headline mx-auto mt-6 max-w-4xl text-[clamp(2.75rem,9vw,7rem)] leading-[0.95]">
+            Let’s build what’s <span className="serif">next.</span>
+          </h2>
+          <p className="mx-auto mt-6 max-w-lg text-ink-muted">
+            A 30-minute call. We’ll map where your buyers are looking — and the fastest route to be there.
+          </p>
+          <div className="mx-auto mt-10 grid max-w-sm grid-cols-1 gap-3 sm:flex sm:max-w-none sm:justify-center">
+            <Magnetic>
+              <Link to="/contact" hash="book" className="btn-ink-invert press">
+                Book a call <ArrowUpRight className="h-4 w-4" />
+              </Link>
+            </Magnetic>
+            <Magnetic>
+              <Link to="/services" className="btn-outline-invert press">
+                Explore services
+              </Link>
+            </Magnetic>
+          </div>
+        </Reveal>
       </div>
-      <Reveal>
-        <p className="eyebrow text-signal">Ready when you are</p>
-        <h2 className="headline mx-auto mt-6 max-w-5xl text-[clamp(2.8rem,10vw,8rem)] leading-[0.95]">
-          Let’s build what’s <span className="serif text-spectrum">next.</span>
-        </h2>
-        <p className="mx-auto mt-6 max-w-lg text-ink-muted">
-          A 30-minute call. We’ll map where your buyers are looking — and the fastest route to be there.
-        </p>
-        <div className="mt-10 flex flex-wrap justify-center gap-4">
-          <Link to="/contact" hash="book" className="btn-signal">
-            Book a call <ArrowUpRight className="h-4 w-4" />
-          </Link>
-          <Link to="/services" className="btn-ink-invert">
-            Explore services
-          </Link>
-        </div>
-      </Reveal>
     </section>
   );
 }

@@ -1,3 +1,7 @@
+import imgCited from "@/assets/blog-cited.jpg";
+import imgAgent from "@/assets/blog-agent.jpg";
+import imgLocal from "@/assets/blog-local.jpg";
+
 export type Post = {
   slug: string;
   title: string;
@@ -61,3 +65,10 @@ export const formatDate = (iso: string) =>
   new Date(iso + "T00:00:00Z").toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
 
 export const getPost = (slug: string) => POSTS.find((p) => p.slug === slug);
+
+const IMAGES: Record<string, string> = {
+  "get-cited-by-chatgpt": imgCited,
+  "lead-qualifier-agent-playbook": imgAgent,
+  "ai-overviews-local-search": imgLocal,
+};
+export const postImage = (slug: string) => IMAGES[slug];

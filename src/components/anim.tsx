@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import React, { useEffect, useRef, useState, type ReactNode } from "react";
 import {
   motion,
   useInView,
@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
-/** Fade + rise + de-blur when scrolled into view. */
+/** Fade + rise when scrolled into view. */
 export function Reveal({
   children,
   className,
@@ -27,8 +27,8 @@ export function Reveal({
   return (
     <motion.div
       className={className}
-      initial={{ opacity: 0, y, filter: "blur(8px)" }}
-      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      initial={{ opacity: 0, y }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once, margin: "-70px" }}
       transition={{ duration: 0.75, delay, ease: EASE }}
       {...rest}
@@ -104,17 +104,27 @@ export function Counter({
   duration?: number;
 }) {
   const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
+  const inView = useInView(ref, { amount: 0.3 });
   const [value, setValue] = useState(0);
+  const done = useRef(false);
 
   useEffect(() => {
-    if (!inView) return;
+    if (!inView || done.current) return;
+    done.current = true;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setValue(to);
+      return;
+    }
     const controls = animate(0, to, {
       duration,
       ease: EASE,
       onUpdate: (v) => setValue(v),
+      onComplete: () => setValue(to),
     });
-    return () => controls.stop();
+    return () => {
+      controls.stop();
+      setValue(to);
+    };
   }, [inView, to, duration]);
 
   return (
@@ -151,3 +161,38 @@ export function Parallax({
 }
 
 export { motion, EASE };
+
+/** Pointer-follow CSS vars (--mx/--my) for spotlight effects. */
+export function spotlight(e: React.PointerEvent<HTMLElement>) {
+  if (e.pointerType !== "mouse") return;
+  const el = e.currentTarget;
+  const r = el.getBoundingClientRect();
+  el.style.setProperty("--mx", `${e.clientX - r.left}px`);
+  el.style.setProperty("--my", `${e.clientY - r.top}px`);
+}
+
+/** Magnetic pull toward the cursor (max ~6px), desktop mouse only. */
+export function Magnetic({ children, className }: { children: ReactNode; className?: string }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const move = (e: React.PointerEvent<HTMLSpanElement>) => {
+    const el = ref.current;
+    if (!el || e.pointerType !== "mouse" || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const r = el.getBoundingClientRect();
+    const dx = ((e.clientX - (r.left + r.width / 2)) / (r.width / 2)) * 6;
+    const dy = ((e.clientY - (r.top + r.height / 2)) / (r.height / 2)) * 6;
+    el.style.transform = `translate3d(${dx.toFixed(1)}px, ${dy.toFixed(1)}px, 0)`;
+  };
+  const leave = () => {
+    if (ref.current) ref.current.style.transform = "";
+  };
+  return (
+    <span
+      ref={ref}
+      onPointerMove={move}
+      onPointerLeave={leave}
+      className={cn("inline-flex transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] [&>*]:w-full [&>*]:justify-center", className)}
+    >
+      {children}
+    </span>
+  );
+}
