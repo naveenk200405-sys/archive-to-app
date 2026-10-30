@@ -3,7 +3,7 @@ import { useRef, type ReactNode } from "react";
 import { motion, useScroll, useTransform, type MotionValue } from "motion/react";
 import { ArrowUpRight, ArrowRight, Plus } from "lucide-react";
 import { Reveal, Magnetic, spotlight } from "@/components/anim";
-import { Marquee } from "@/components/marquee";
+import { HeroCards } from "@/components/hero-cards";
 import { SERVICES } from "@/lib/services";
 import { BigStats } from "@/components/big-stats";
 import { HorizontalAgents } from "@/components/scroll-showcase";
