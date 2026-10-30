@@ -97,7 +97,7 @@ function Hero() {
       <div aria-hidden className="hero-blob -right-24 top-24 h-[24rem] w-[24rem] opacity-40" style={{ background: "var(--hero-mint)" }} />
       <div aria-hidden className="grain pointer-events-none absolute inset-0 -z-10" />
 
-      <div className="container-site grid items-center gap-12 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
+      <div className="container-site grid items-center gap-8 lg:gap-12 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
         <div>
           <Rise i={0} className="inline-flex items-center gap-3 rounded-full border border-border bg-card/70 px-4 py-2">
             <span className="relative flex h-2.5 w-2.5 shrink-0" aria-hidden>
@@ -110,7 +110,7 @@ function Hero() {
             </span>
           </Rise>
 
-          <h1 className="headline mt-8 text-[clamp(2.6rem,7vw,5.75rem)] leading-[0.98] text-hero-ink">
+          <h1 className="headline mt-8 text-[clamp(2.6rem,6vw,4.75rem)] leading-[0.98] text-hero-ink">
             <Rise i={1}>
               <span className="serif pr-2 text-hero-green">Transforming</span> brands
             </Rise>
@@ -127,7 +127,7 @@ function Hero() {
             </p>
           </Rise>
 
-          <Rise i={5} className="mt-10 grid grid-cols-2 gap-3 sm:flex sm:flex-nowrap">
+          <Rise i={5} className="mt-10 grid grid-cols-1 gap-3 sm:flex sm:flex-nowrap">
             <Link to="/contact" hash="book" className="btn-hero press whitespace-nowrap">
               Book a strategy call
               <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-hero-ink text-ink-fg">

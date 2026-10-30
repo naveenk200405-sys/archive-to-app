@@ -5,7 +5,7 @@ const SPARK = "M0 26 L12 22 L24 24 L36 16 L48 18 L60 9 L72 4";
 /** Three floating glass cards beside the hero headline. Only the stat card shows on mobile. */
 export function HeroCards() {
   return (
-    <div className="relative mx-auto h-56 w-full max-w-sm lg:h-[26rem]">
+    <div className="relative mx-auto h-32 w-full max-w-sm lg:h-[26rem]">
       <div className="glass-card hero-float absolute left-0 top-0 hidden w-64 rounded-2xl p-4 lg:block" style={{ animationDelay: "0s" }}>
         <p className="flex items-center gap-2 text-xs font-semibold text-muted-foreground">
           <span className="grid h-6 w-6 place-items-center rounded-full bg-hero-ink text-ink-fg"><Bot className="h-3.5 w-3.5" /></span>
