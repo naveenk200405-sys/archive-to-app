@@ -92,14 +92,14 @@ function PlatformRow() {
 
 function Hero() {
   return (
-    <section className="relative isolate overflow-hidden bg-hero-bg pb-14 pt-32 md:pb-20 md:pt-40">
-      <div aria-hidden className="hero-blob -left-32 -top-32 h-[28rem] w-[28rem] bg-hero-green opacity-25" />
-      <div aria-hidden className="hero-blob -right-24 top-24 h-[24rem] w-[24rem] opacity-40" style={{ background: "var(--hero-mint)" }} />
+    <section className="relative isolate overflow-hidden bg-hero-bg pb-14 pt-32 md:pb-20 md:pt-40 lg:flex lg:min-h-svh lg:flex-col lg:justify-center lg:pb-8 lg:pt-24">
+      <div aria-hidden className="hero-blob -left-24 -top-24 h-64 w-64 bg-hero-green opacity-[0.13] md:-left-32 md:-top-32 md:h-[28rem] md:w-[28rem] md:opacity-25" />
+      <div aria-hidden className="hero-blob hidden md:block -right-24 top-24 h-[24rem] w-[24rem] opacity-40" style={{ background: "var(--hero-mint)" }} />
       <div aria-hidden className="grain pointer-events-none absolute inset-0 -z-10" />
 
-      <div className="container-site grid items-center gap-8 lg:gap-12 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
+      <div className="container-site grid items-center gap-8 lg:gap-12 lg:grid-cols-[minmax(0,55fr)_minmax(0,45fr)]">
         <div>
-          <Rise i={0} className="inline-flex items-center gap-3 rounded-full border border-border bg-card/70 px-4 py-2">
+          <Rise i={0} className="inline-flex items-center gap-3 rounded-full border border-border bg-transparent px-4 md:bg-card/70 py-2">
             <span className="relative flex h-2.5 w-2.5 shrink-0" aria-hidden>
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-hero-green opacity-75 motion-reduce:animate-none" />
               <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-hero-green" />
@@ -116,7 +116,7 @@ function Hero() {
             </Rise>
             <Rise i={2}>into AI-native</Rise>
             <Rise i={3}>
-              growth <span className="serif text-hero-green">machines.</span>
+              growth <span className="serif text-hero-ink md:text-hero-green">machines.</span>
             </Rise>
           </h1>
 
@@ -151,7 +151,7 @@ function Hero() {
         </Rise>
       </div>
 
-      <Rise i={7} className="container-site mt-16 md:mt-20">
+      <Rise i={7} className="container-site mt-16 md:mt-20 lg:mt-10">
         <div className="flex flex-col gap-4 border-y border-border py-5 md:flex-row md:items-center md:gap-8">
           <p className="eyebrow shrink-0 text-muted-foreground">Get found on</p>
           <div className="marquee-hover-pause fade-x min-w-0 flex-1 overflow-hidden">
