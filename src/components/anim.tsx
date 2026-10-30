@@ -104,17 +104,27 @@ export function Counter({
   duration?: number;
 }) {
   const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, amount: 0.3 });
+  const inView = useInView(ref, { amount: 0.3 });
   const [value, setValue] = useState(0);
+  const done = useRef(false);
 
   useEffect(() => {
-    if (!inView) return;
+    if (!inView || done.current) return;
+    done.current = true;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setValue(to);
+      return;
+    }
     const controls = animate(0, to, {
       duration,
       ease: EASE,
       onUpdate: (v) => setValue(v),
+      onComplete: () => setValue(to),
     });
-    return () => controls.stop();
+    return () => {
+      controls.stop();
+      setValue(to);
+    };
   }, [inView, to, duration]);
 
   return (
