@@ -13,7 +13,7 @@ import { type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { SiteNav } from "@/components/site-nav";
 import { SiteFooter } from "@/components/site-footer";
-import { CursorGlow } from "@/components/cursor-glow";
+import { MotionConfig } from "motion/react";
 import { ScrollProgress } from "@/components/scroll-progress";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -118,8 +118,8 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <MotionConfig reducedMotion="user">
       <ScrollProgress />
-      <CursorGlow />
       <div className="flex min-h-screen flex-col">
         <SiteNav />
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
@@ -129,6 +129,7 @@ function RootComponent() {
         <SiteFooter />
       </div>
       <Toaster position="bottom-right" />
+      </MotionConfig>
     </QueryClientProvider>
   );
 }
