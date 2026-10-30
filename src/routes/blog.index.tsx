@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowUpRight } from "lucide-react";
 import { Reveal } from "@/components/anim";
-import { POSTS, formatDate } from "@/lib/blog";
+import { POSTS, formatDate, postImage } from "@/lib/blog";
 
 export const Route = createFileRoute("/blog/")({
   head: () => ({
@@ -63,13 +63,23 @@ function BlogIndex() {
 
 export function PostCard({ post }: { post: (typeof POSTS)[number] }) {
   return (
-    <Link to="/blog/$slug" params={{ slug: post.slug }} className="group block">
-      <div className={`relative aspect-[4/3] overflow-hidden rounded-3xl bg-gradient-to-br ${post.art}`}>
-        <div className="grain absolute inset-0 transition-transform duration-700 group-hover:scale-110" />
-        <span className="absolute left-4 top-4 rounded-full bg-card/90 px-3 py-1 text-xs font-semibold">{post.tag}</span>
+    <Link to="/blog/$slug" params={{ slug: post.slug }} className="group block press">
+      <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-border bg-muted">
+        <img
+          src={postImage(post.slug)}
+          alt=""
+          loading="lazy"
+          width={1280}
+          height={960}
+          className="h-full w-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
+        />
       </div>
-      <p className="mt-5 text-sm text-muted-foreground">{formatDate(post.date)} · {post.readTime}</p>
-      <h3 className="headline mt-2 text-xl leading-snug transition-colors group-hover:text-signal-deep md:text-2xl">{post.title}</h3>
+      <p className="mt-5 text-sm text-muted-foreground">
+        <span className="font-semibold text-foreground">{post.tag}</span> · {formatDate(post.date)} · {post.readTime}
+      </p>
+      <h3 className="headline mt-2 text-xl leading-snug md:text-2xl">
+        <span className="link-underline">{post.title}</span>
+      </h3>
     </Link>
   );
 }

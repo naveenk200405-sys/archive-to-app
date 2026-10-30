@@ -1,7 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import { Reveal } from "@/components/anim";
-import { getPost, formatDate } from "@/lib/blog";
+import { getPost, formatDate, postImage } from "@/lib/blog";
 
 export const Route = createFileRoute("/blog/$slug")({
   loader: ({ params }) => {
@@ -45,8 +45,8 @@ function PostPage() {
           <h1 className="headline mt-4 text-4xl md:text-6xl">{post.title}</h1>
           <p className="mt-6 text-xl leading-relaxed text-muted-foreground">{post.excerpt}</p>
         </Reveal>
-        <div className={`relative mt-12 aspect-[16/9] overflow-hidden rounded-4xl bg-gradient-to-br ${post.art}`}>
-          <div className="grain absolute inset-0" />
+        <div className="relative mt-12 aspect-[16/9] overflow-hidden rounded-2xl bg-muted">
+          <img src={postImage(post.slug)} alt="" width={1280} height={960} className="h-full w-full object-cover" />
         </div>
         <div className="mt-12 space-y-8">
           {post.body.map((b, i) => (
