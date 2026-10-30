@@ -1,0 +1,2 @@
+- [x] Hero polish (headline, card alignment, glow, mobile)
+- [x] Cal.com booking embed
