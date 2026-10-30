@@ -62,67 +62,104 @@ function Rise({ children, i, className }: { children: ReactNode; i: number; clas
   );
 }
 
-function Hero() {
-  const [glow, setGlow] = useState(false);
+const PLATFORMS: { name: string; color: string }[] = [
+  { name: "ChatGPT", color: "#10A37F" },
+  { name: "Perplexity", color: "#20808D" },
+  { name: "Google AI Overviews", color: "#4285F4" },
+  { name: "Gemini", color: "#8E75F0" },
+  { name: "Claude", color: "#D97757" },
+  { name: "Instagram", color: "#E1306C" },
+  { name: "LinkedIn", color: "#0A66C2" },
+  { name: "Google Search", color: "#34A853" },
+];
+
+function PlatformRow() {
   return (
-    <section
-      data-glow={glow ? "on" : "off"}
-      onPointerMove={(e) => {
-        spotlight(e);
-        if (!glow && e.pointerType === "mouse") setGlow(true);
-      }}
-      onPointerLeave={() => setGlow(false)}
-      className="relative isolate pb-16 pt-32 md:pb-24 md:pt-44"
-    >
-      <div aria-hidden className="hero-cursor-glow" />
-      <div className="container-site">
-        <Rise i={0} className="flex items-center gap-3">
-          <span className="pulse-dot shrink-0" aria-hidden />
-          <span className="eyebrow text-muted-foreground">
-            <span className="whitespace-nowrap">AI growth agency ·</span>{" "}
-            <span className="whitespace-nowrap">Est. for the AI era</span>
-          </span>
-        </Rise>
+    <div className="flex shrink-0 items-center">
+      {PLATFORMS.map((p) => (
+        <span
+          key={p.name}
+          style={{ ["--brand" as string]: p.color }}
+          className="group mx-5 flex items-center gap-2 whitespace-nowrap font-display text-lg font-semibold text-muted-foreground transition-colors md:mx-8 [@media(hover:hover)]:hover:text-hero-ink"
+        >
+          <span className="h-2.5 w-2.5 rounded-full bg-muted-foreground/50 transition-colors [@media(hover:hover)]:group-hover:bg-[var(--brand)]" aria-hidden />
+          {p.name}
+        </span>
+      ))}
+    </div>
+  );
+}
 
-        <h1 className="headline mt-8 text-[clamp(2.75rem,9vw,7rem)] leading-[0.95]">
-          <Rise i={1}>
-            <span className="serif pr-2">Transforming</span> brands
-          </Rise>
-          <Rise i={2}>into AI-native</Rise>
-          <Rise i={3}>
-            growth <span className="serif">machines.</span>
-          </Rise>
-        </h1>
+function Hero() {
+  return (
+    <section className="relative isolate overflow-hidden bg-hero-bg pb-14 pt-32 md:pb-20 md:pt-40">
+      <div aria-hidden className="hero-blob -left-32 -top-32 h-[28rem] w-[28rem] bg-hero-green opacity-25" />
+      <div aria-hidden className="hero-blob -right-24 top-24 h-[24rem] w-[24rem] opacity-40" style={{ background: "var(--hero-mint)" }} />
+      <div aria-hidden className="grain pointer-events-none absolute inset-0 -z-10" />
 
-        <div className="mt-12 grid gap-8 md:mt-16 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
+      <div className="container-site grid items-center gap-12 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
+        <div>
+          <Rise i={0} className="inline-flex items-center gap-3 rounded-full border border-border bg-card/70 px-4 py-2">
+            <span className="relative flex h-2.5 w-2.5 shrink-0" aria-hidden>
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-hero-green opacity-75 motion-reduce:animate-none" />
+              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-hero-green" />
+            </span>
+            <span className="eyebrow text-muted-foreground">
+              <span className="whitespace-nowrap">AI growth agency ·</span>{" "}
+              <span className="whitespace-nowrap">Est. for the AI era</span>
+            </span>
+          </Rise>
+
+          <h1 className="headline mt-8 text-[clamp(2.6rem,7vw,5.75rem)] leading-[0.98] text-hero-ink">
+            <Rise i={1}>
+              <span className="serif pr-2 text-hero-green">Transforming</span> brands
+            </Rise>
+            <Rise i={2}>into AI-native</Rise>
+            <Rise i={3}>
+              growth <span className="serif text-hero-green">machines.</span>
+            </Rise>
+          </h1>
+
           <Rise i={4}>
-            <p className="max-w-lg text-lg leading-relaxed text-muted-foreground md:text-xl">
+            <p className="mt-8 max-w-lg text-lg leading-relaxed text-muted-foreground">
               We get you ranked on Google, cited by ChatGPT, and build custom AI agents that turn
               attention into booked calls — around the clock.
             </p>
           </Rise>
-          <Rise i={5} className="grid grid-cols-1 gap-3 sm:flex sm:flex-nowrap">
-            <Magnetic>
-              <Link to="/contact" hash="book" className="btn-ink press whitespace-nowrap">
-                Book a strategy call <ArrowUpRight className="h-4 w-4" />
-              </Link>
-            </Magnetic>
-            <Magnetic>
-              <Link to="/work" className="btn-outline press whitespace-nowrap">
-                See our work
-              </Link>
-            </Magnetic>
+
+          <Rise i={5} className="mt-10 grid grid-cols-2 gap-3 sm:flex sm:flex-nowrap">
+            <Link to="/contact" hash="book" className="btn-hero press whitespace-nowrap">
+              Book a strategy call
+              <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-hero-ink text-ink-fg">
+                <ArrowUpRight className="h-4 w-4" />
+              </span>
+            </Link>
+            <Link to="/work" className="btn-hero-outline press whitespace-nowrap">
+              See our work
+            </Link>
+          </Rise>
+
+          <Rise i={6}>
+            <p className="mt-6 text-sm text-muted-foreground">
+              Trusted by growing brands · 30-minute call · No commitment
+            </p>
           </Rise>
         </div>
+
+        <Rise i={4}>
+          <HeroCards />
+        </Rise>
       </div>
 
-      <Rise i={6} className="container-site mt-20 md:mt-24">
-        <div className="border-y border-border py-6">
-          <Marquee
-            slow
-            className="font-display text-xl font-semibold text-muted-foreground md:text-2xl"
-            items={["ChatGPT", "Perplexity", "Google AI Overviews", "Gemini", "Claude", "Instagram", "LinkedIn", "Google Search"]}
-          />
+      <Rise i={7} className="container-site mt-16 md:mt-20">
+        <div className="flex flex-col gap-4 border-y border-border py-5 md:flex-row md:items-center md:gap-8">
+          <p className="eyebrow shrink-0 text-muted-foreground">Get found on</p>
+          <div className="marquee-hover-pause fade-x min-w-0 flex-1 overflow-hidden">
+            <div className="marquee-track-slow">
+              <PlatformRow />
+              <PlatformRow />
+            </div>
+          </div>
         </div>
       </Rise>
     </section>
