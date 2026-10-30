@@ -69,7 +69,7 @@ function PanelCard({ p }: { p: (typeof PANELS)[number] }) {
 export function HorizontalAgents() {
   return (
     <section className="bg-ink text-ink-fg">
-      <div className="container-site section-y">
+      <div className="container-site pb-24 md:pb-32">
         <p className="eyebrow text-ink-muted">What our agents do</p>
         <h2 className="headline mt-4 max-w-3xl text-4xl md:text-6xl">
           Built to work. <span className="serif">Never off duty.</span>

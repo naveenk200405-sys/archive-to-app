@@ -79,8 +79,8 @@ function Hero() {
         <Rise i={0} className="flex items-center gap-3">
           <span className="pulse-dot shrink-0" aria-hidden />
           <span className="eyebrow text-muted-foreground">
-            <span className="whitespace-nowrap">AI growth agency</span>{" "}
-            <span className="whitespace-nowrap">· Est. for the AI era</span>
+            <span className="whitespace-nowrap">AI growth agency ·</span>{" "}
+            <span className="whitespace-nowrap">Est. for the AI era</span>
           </span>
         </Rise>
 
