@@ -483,3 +483,18 @@
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
   .rise-in { opacity: 1; transform: none; }
 }
+@utility btn-outline-invert {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 999px;
+  border: 1px solid var(--ink-border);
+  color: var(--ink-fg);
+  padding: 0.8rem 1.6rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: border-color 0.25s, background 0.25s;
+  @media (hover: hover) {
+    &:hover { border-color: var(--signal); background: var(--ink-soft); }
+  }
+}

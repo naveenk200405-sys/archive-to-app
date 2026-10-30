@@ -367,7 +367,7 @@ function FinalCta() {
               </Link>
             </Magnetic>
             <Magnetic>
-              <Link to="/services" className="btn-outline press border-ink-border text-ink-fg hover:border-ink-fg hover:bg-ink-soft">
+              <Link to="/services" className="btn-outline-invert press">
                 Explore services
               </Link>
             </Magnetic>
