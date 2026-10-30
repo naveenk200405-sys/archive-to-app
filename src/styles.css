@@ -394,6 +394,7 @@
   margin-inline: auto;
   padding-inline: 1.25rem;
   @media (width >= 48rem) { padding-inline: 2rem; }
+  @media (width >= 1024px) { max-width: 100rem; padding-inline: 2.5rem; }
 }
 @utility section-y {
   padding-block: 6rem;
@@ -570,4 +571,9 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .hero-float { animation: none; }
+}
+
+/* Desktop density: mimic 80% zoom via root font-size */
+@media (width >= 1024px) {
+  html { font-size: 14.4px; }
 }
