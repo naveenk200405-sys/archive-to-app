@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useRef, useState, type ReactNode } from "react";
+import { useRef, type ReactNode } from "react";
 import { motion, useScroll, useTransform, type MotionValue } from "motion/react";
 import { ArrowUpRight, ArrowRight, Plus } from "lucide-react";
 import { Reveal, Magnetic, spotlight } from "@/components/anim";
